@@ -41,10 +41,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             .and()
-                .requestMatchers().antMatchers("/api/**")
+                .requestMatchers().antMatchers("/api/**","/**")
             .and()
                 .authorizeRequests()               
-                    .antMatchers("/api/**").access("hasRole('ADMIN')")
+                    .antMatchers("/api/users","/api/users/**").access("hasRole('ADMIN')")
+                    .antMatchers("/api/**").authenticated()
+                    .antMatchers("/**").permitAll()
             .and()
                 .exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
