@@ -37,7 +37,7 @@ public class UserRestController {
   
       
     //-------------------Retrieve All Users--------------------------------------------------------
-      
+    
     @GetMapping(value= "/users")
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = userService.findAll();

@@ -30,10 +30,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private TokenStore tokenStore;
  
     @Autowired
-    private UserApprovalHandler userApprovalHandler;
- 
-    @Autowired
-    @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
  
     @Override
@@ -51,7 +47,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
  
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore).userApprovalHandler(userApprovalHandler)
+        endpoints.tokenStore(tokenStore)
                 .authenticationManager(authenticationManager);
     }
  

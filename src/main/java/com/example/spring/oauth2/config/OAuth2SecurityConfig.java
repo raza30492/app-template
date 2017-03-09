@@ -32,8 +32,8 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
  *
  * @author razamd
  */
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -54,17 +54,17 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 //        auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
 //    }
 
-    @Override
-    protected UserDetailsService userDetailsService() {
-        return (email) -> {
-            com.example.spring.oauth2.entity.User user = userService.findByEmail(email);
-            if (user != null) {
-                return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole().getValue()));
-            } else {
-                throw new UsernameNotFoundException("Could not find the user '" + email + "'");
-            }
-        };
-    }
+//    @Override
+//    protected UserDetailsService userDetailsService() {
+//        return (email) -> {
+//            com.example.spring.oauth2.entity.User user = userService.findByEmail(email);
+//            if (user != null) {
+//                return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole().getValue()));
+//            } else {
+//                throw new UsernameNotFoundException("Could not find the user '" + email + "'");
+//            }
+//        };
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
