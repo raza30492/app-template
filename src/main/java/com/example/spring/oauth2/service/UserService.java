@@ -9,6 +9,8 @@ import com.example.spring.oauth2.entity.User;
 import com.example.spring.oauth2.respository.UserRespository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,32 +23,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     @Autowired
-    UserRespository userRespository;
+    UserRespository userRepository;
 
     public User findOne(Long id) {
-        return userRespository.findOne(id);
+        return userRepository.findOne(id);
     }
 
     public List<User> findAll() {
-        return userRespository.findAll();
+        return userRepository.findAll();
+    }
+    
+    public Page<User> findAllByPage(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 
     public User findByEmail(String email) {
-        return userRespository.findByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     public Boolean exists(Long id) {
-        return userRespository.exists(id);
+        return userRepository.exists(id);
     }
 
     @Transactional
     public User save(User user) {
-        return userRespository.save(user);
+        user.setPassword(user.getMobile());
+        return userRepository.save(user);
     }
 
     @Transactional
     public User update(User user) {
-        User user2 = userRespository.findOne(user.getId());
+        User user2 = userRepository.findOne(user.getId());
         user2.setEmail(user.getEmail());
         user2.setMobile(user.getMobile());
         user2.setName(user.getName());
@@ -56,7 +63,7 @@ public class UserService {
     
     @Transactional
     public void delete(Long id) {
-        userRespository.delete(id);
+        userRepository.delete(id);
     }
     
 }

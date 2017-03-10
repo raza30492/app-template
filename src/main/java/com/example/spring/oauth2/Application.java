@@ -8,15 +8,12 @@ package com.example.spring.oauth2;
 import com.example.spring.oauth2.entity.Role;
 import com.example.spring.oauth2.entity.User;
 import com.example.spring.oauth2.service.UserService;
-import java.lang.reflect.Method;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.WebMvcRegistrationsAdapter;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -24,10 +21,6 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  *
@@ -46,6 +39,8 @@ public class Application extends SpringBootServletInitializer{
         return application.sources(Application.class);
     }
     
+    
+    
     @Bean
     CommandLineRunner init(
             UserService userService) {
@@ -59,34 +54,6 @@ public class Application extends SpringBootServletInitializer{
     @Bean
     public TokenStore tokenStore() {
         return new InMemoryTokenStore();
-    }
-    
-    @Bean
-    public WebMvcRegistrationsAdapter webMvcRegistrationsHandlerMapping() {
-        return new WebMvcRegistrationsAdapter() {
-            @Override
-            public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
-                return new RequestMappingHandlerMapping() {
-                    private final static String API_BASE_PATH = "api";
- 
-                    @Override
-                    protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
-                        Class<?> beanType = method.getDeclaringClass();
-                        if (AnnotationUtils.findAnnotation(beanType, RestController.class) != null) {
-                            PatternsRequestCondition apiPattern = new PatternsRequestCondition(API_BASE_PATH)
-                                    .combine(mapping.getPatternsCondition());
- 
-                            mapping = new RequestMappingInfo(mapping.getName(), apiPattern,
-                                    mapping.getMethodsCondition(), mapping.getParamsCondition(),
-                                    mapping.getHeadersCondition(), mapping.getConsumesCondition(),
-                                    mapping.getProducesCondition(), mapping.getCustomCondition());
-                        }
- 
-                        super.registerHandlerMethod(handler, method, mapping);
-                    }
-                };
-            }
-        };
     }
     
     @GetMapping(value= "/")
