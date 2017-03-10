@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.example.spring.oauth2.config;
 
 import com.example.spring.oauth2.service.UserService;
@@ -17,10 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-/**
- *
- * @author razamd
- */
 @Configuration
 public class WebSecurityGlobalConfig extends GlobalAuthenticationConfigurerAdapter {
 
