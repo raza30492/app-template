@@ -27,7 +27,12 @@ public class WebSecurityGlobalConfig extends GlobalAuthenticationConfigurerAdapt
     @Bean
     protected UserDetailsService userDetailsService() {
         return (email) -> {
-            UserDto user = userService.findByEmail(email);
+            UserDto user;
+            if(email.contains("@")){
+                user = userService.findByEmail(email);
+            }else{
+                user = userService.findByUsername(email);
+            }
             if (user != null) {
                 return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole()));
             } else {
