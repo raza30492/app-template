@@ -4,6 +4,8 @@ import com.example.spring.oauth2.dto.FieldError;
 import com.example.spring.oauth2.dto.RestError;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GenericExceptionHandler {
+    
+    private final Logger logger = LoggerFactory.getLogger(GenericExceptionHandler.class);
 
     @Autowired
     MessageSource messageSource;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> processValidationError(MethodArgumentNotValidException ex) {
+        logger.debug("processValidationError()");
         BindingResult result = ex.getBindingResult();
         return new ResponseEntity<>(processFieldError(result.getFieldErrors()), HttpStatus.BAD_REQUEST);
     }
@@ -50,7 +55,7 @@ public class GenericExceptionHandler {
 //    }
     @ExceptionHandler
     ResponseEntity<?> handleException(Exception e) {
-
+        logger.debug("handleException: {}",e.getMessage());
         return response(HttpStatus.INTERNAL_SERVER_ERROR, 500, e.getMessage(), e.getMessage(), "");
     }
 

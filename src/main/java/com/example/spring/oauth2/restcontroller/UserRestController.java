@@ -6,6 +6,8 @@ import com.example.spring.oauth2.entity.User;
 import com.example.spring.oauth2.service.UserService;
 import java.net.URI;
 import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,18 +30,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/users")
 public class UserRestController{
     
+    private final Logger logger = LoggerFactory.getLogger(UserRestController.class);
+    
     @Autowired UserService userService;  //Service which will do all data retrieval/manipulation work
 
     @Autowired UserAssembler userAssembler;
     
     @GetMapping
     public ResponseEntity<?> listAllUsers(Pageable pageable, PagedResourcesAssembler assembler) {
+        logger.debug("listAllUsers()");
         Page<UserDto> page = userService.findAllByPage(pageable);
         return new ResponseEntity<>(assembler.toResource(page, userAssembler), HttpStatus.OK);
     }
   
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
+        logger.debug("getUser(): id = {}",id);
         UserDto user = userService.findOne(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,6 +55,7 @@ public class UserRestController{
    
     @PostMapping
     public ResponseEntity<Void> createUser(@Valid @RequestBody UserDto user) {
+        logger.debug("createUser():\n {}", user.toString());
         user = userService.save(user);
         Link selfLink = linkTo(UserRestController.class).slash(user.getId()).withSelfRel();
         return ResponseEntity.created(URI.create(selfLink.getHref())).build();
@@ -56,6 +63,7 @@ public class UserRestController{
  
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") long id,@Validated @RequestBody UserDto user) {
+        logger.debug("updateUser(): id = {} \n {}",id,user);
         if (!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -66,6 +74,7 @@ public class UserRestController{
   
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+        logger.debug("deleteUser(): id = {}",id);
         if (!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

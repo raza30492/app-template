@@ -84,7 +84,9 @@ public class UserDto {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
-    
-    
 
+    @Override
+    public String toString() {
+        return "UserDto{" + "id=" + id + ", name=" + name + ", email=" + email + ", role=" + role + ", mobile=" + mobile + '}';
+    }
 }

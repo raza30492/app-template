@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @SpringBootApplication
 @Controller
 public class Application extends SpringBootServletInitializer{
+    
+    private final Logger logger = LoggerFactory.getLogger(Application.class);
     
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -61,6 +65,7 @@ public class Application extends SpringBootServletInitializer{
     @GetMapping(value= "/")
     @ResponseBody
     public ResponseEntity<?> hello() {
+        logger.debug("home page");
         return new ResponseEntity<>("Hello World", HttpStatus.OK);
     }
 }
