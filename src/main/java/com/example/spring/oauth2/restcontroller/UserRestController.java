@@ -1,9 +1,11 @@
 package com.example.spring.oauth2.restcontroller;
 
 import com.example.spring.oauth2.assembler.UserAssembler;
+import com.example.spring.oauth2.dto.UserDto;
 import com.example.spring.oauth2.entity.User;
 import com.example.spring.oauth2.service.UserService;
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -31,13 +34,13 @@ public class UserRestController{
     
     @GetMapping
     public ResponseEntity<?> listAllUsers(Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<User> page = userService.findAllByPage(pageable);
+        Page<UserDto> page = userService.findAllByPage(pageable);
         return new ResponseEntity<>(assembler.toResource(page, userAssembler), HttpStatus.OK);
     }
   
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
-        User user = userService.findOne(id);
+        UserDto user = userService.findOne(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -45,14 +48,14 @@ public class UserRestController{
     }
    
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
+    public ResponseEntity<Void> createUser(@Valid @RequestBody UserDto user) {
         user = userService.save(user);
         Link selfLink = linkTo(UserRestController.class).slash(user.getId()).withSelfRel();
         return ResponseEntity.created(URI.create(selfLink.getHref())).build();
     }
  
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable("id") long id,@Validated @RequestBody UserDto user) {
         if (!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

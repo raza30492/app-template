@@ -1,5 +1,6 @@
 package com.example.spring.oauth2.config;
 
+import com.example.spring.oauth2.dto.UserDto;
 import com.example.spring.oauth2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +27,9 @@ public class WebSecurityGlobalConfig extends GlobalAuthenticationConfigurerAdapt
     @Bean
     protected UserDetailsService userDetailsService() {
         return (email) -> {
-            com.example.spring.oauth2.entity.User user = userService.findByEmail(email);
+            UserDto user = userService.findByEmail(email);
             if (user != null) {
-                return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole().getValue()));
+                return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole()));
             } else {
                 throw new UsernameNotFoundException("Could not find the user '" + email + "'");
             }

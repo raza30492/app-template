@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.example.spring.oauth2.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,16 +10,12 @@ import javax.persistence.Table;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/**
- *
- * @author razamd
- */
 @Entity
 @Table(name = "USER")
 public class User implements Serializable{
     @Id
     @Column(name = "USER_ID", nullable = false, unique = true)
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "USERNAME", nullable = false)
@@ -34,7 +24,6 @@ public class User implements Serializable{
     @Column(name = "EMAIL", nullable = true, unique = true)
     private String email;
 
-    @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
@@ -47,8 +36,7 @@ public class User implements Serializable{
     public User() {
     }
 
-    public User(Long id,String name, String email, String password, String role, String mobile) {
-        this.id = id;
+    public User(String name, String email, String password, String role, String mobile) {
         this.name = name;
         this.email = email;
         setPassword(password);
