@@ -56,6 +56,7 @@ public class GenericExceptionHandler {
     @ExceptionHandler
     ResponseEntity<?> handleException(Exception e) {
         logger.debug("handleException: {}",e.getMessage());
+        e.printStackTrace();
         return response(HttpStatus.INTERNAL_SERVER_ERROR, 500, e.getMessage(), e.getMessage(), "");
     }
 
