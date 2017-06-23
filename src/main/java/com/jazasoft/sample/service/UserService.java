@@ -26,7 +26,11 @@ public class UserService {
 
     public UserDto findOne(Long id) {
         logger.debug("findOne(): id = {}",id);
-        return mapper.map(userRepository.findOne(id), UserDto.class);
+        User user = userRepository.findOne(id);
+        if (user != null) {
+            return mapper.map(userRepository.findOne(id), UserDto.class);
+        }
+        return null;
     }
 
     public List<UserDto> findAll() {

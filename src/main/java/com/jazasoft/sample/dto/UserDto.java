@@ -1,6 +1,8 @@
 package com.jazasoft.sample.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jazasoft.sample.Role;
+import com.jazasoft.sample.validation.StringEnum;
 import org.springframework.hateoas.core.Relation;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class UserDto {
     private String password;
 
     @NotNull
+    @StringEnum(enumClass = Role.class)
     private String role;
 
     @NotNull

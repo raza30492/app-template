@@ -1,5 +1,6 @@
 package com.jazasoft.sample.restcontroller;
 
+import com.jazasoft.sample.ApiUrls;
 import com.jazasoft.sample.assembler.UserAssembler;
 import com.jazasoft.sample.dto.UserDto;
 import com.jazasoft.sample.service.UserService;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping(ApiUrls.ROOT_URL_USERS)
 public class UserRestController{
     
     private final Logger logger = LoggerFactory.getLogger(UserRestController.class);
@@ -47,14 +48,13 @@ public class UserRestController{
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
   
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getUser(@PathVariable("id") long id) {
+    @GetMapping(ApiUrls.URL_USERS_USER)
+    public ResponseEntity<?> getUser(@PathVariable("userId") long id) {
         logger.debug("getUser(): id = {}",id);
         UserDto user = userService.findOne(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(userAssembler.toResource(user), HttpStatus.OK);
     }
    
@@ -66,8 +66,8 @@ public class UserRestController{
         return ResponseEntity.created(URI.create(selfLink.getHref())).build();
     }
  
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id,@Validated @RequestBody UserDto user) {
+    @PutMapping(ApiUrls.URL_USERS_USER)
+    public ResponseEntity<?> updateUser(@PathVariable("userId") long id,@Validated @RequestBody UserDto user) {
         logger.debug("updateUser(): id = {} \n {}",id,user);
         if (!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,8 +77,8 @@ public class UserRestController{
         return new ResponseEntity<>(userAssembler.toResource(user), HttpStatus.OK);
     }
   
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping(ApiUrls.URL_USERS_USER)
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") long id) {
         logger.debug("deleteUser(): id = {}",id);
         if (!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

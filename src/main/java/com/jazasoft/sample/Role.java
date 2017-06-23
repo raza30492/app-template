@@ -1,4 +1,4 @@
-package com.jazasoft.sample.entity;
+package com.jazasoft.sample;
 
 public enum Role {
     ADMIN("ROLE_ADMIN"), USER("ROLE_USER");

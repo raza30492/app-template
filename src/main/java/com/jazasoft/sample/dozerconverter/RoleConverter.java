@@ -1,6 +1,6 @@
 package com.jazasoft.sample.dozerconverter;
 
-import com.jazasoft.sample.entity.Role;
+import com.jazasoft.sample.Role;
 import org.dozer.DozerConverter;
 
 public class RoleConverter extends DozerConverter<String, Role>{
