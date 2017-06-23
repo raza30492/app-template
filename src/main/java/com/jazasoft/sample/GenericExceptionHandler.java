@@ -1,14 +1,16 @@
-package com.example.spring.oauth2;
+package com.jazasoft.sample;
 
-import com.example.spring.oauth2.dto.FieldError;
-import com.example.spring.oauth2.dto.RestError;
+import com.jazasoft.sample.dto.FieldError;
+import com.jazasoft.sample.dto.RestError;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -36,23 +38,24 @@ public class GenericExceptionHandler {
                 .map(error -> {
                     return new FieldError(error.getField(),
                             error.getRejectedValue(),
-                            messageSource.getMessage(error.getCodes()[0], null, LocaleContextHolder.getLocale())
+                            messageSource.getMessage(error.getCodes()[0], null, error.getDefaultMessage(), LocaleContextHolder.getLocale())
                     );
                 })
                 .collect(Collectors.toList());
         return errors;
     }
 
-//    @ExceptionHandler
-//    ResponseEntity<?> handleConflict(DataIntegrityViolationException e) {
-//    	String cause = e.getRootCause().getMessage();
-//    	if(cause.toLowerCase().contains("duplicate")){
-//    		return response(HttpStatus.CONFLICT, 40901, "Duplicate Entry. Data with same name already exist in database.", e.getRootCause().getMessage(), "");
-//    	}else if(cause.toLowerCase().contains("cannot delete")){
-//    		return response(HttpStatus.CONFLICT, 40903, "Deletion restricted to prevent data inconsistency.", e.getRootCause().getMessage(), "");
-//    	}
-//        return response(HttpStatus.CONFLICT, 40900, "Operation cannot be performed. Integrity Constraint violated.", e.getRootCause().getMessage(), "");
-//    }
+    @ExceptionHandler
+    ResponseEntity<?> handleConflict(DataIntegrityViolationException e) {
+    	String cause = e.getRootCause().getMessage();
+    	if(cause.toLowerCase().contains("duplicate")){
+    		return response(HttpStatus.CONFLICT, 40901, "Duplicate Entry. Data with same name already exist in database.", e.getRootCause().getMessage(), "");
+    	}else if(cause.toLowerCase().contains("cannot delete")){
+    		return response(HttpStatus.CONFLICT, 40903, "Deletion restricted to prevent data inconsistency.", e.getRootCause().getMessage(), "");
+    	}
+        return response(HttpStatus.CONFLICT, 40900, "Operation cannot be performed. Integrity Constraint violated.", e.getRootCause().getMessage(), "");
+    }
+
     @ExceptionHandler
     ResponseEntity<?> handleException(Exception e) {
         logger.debug("handleException: {}",e.getMessage());

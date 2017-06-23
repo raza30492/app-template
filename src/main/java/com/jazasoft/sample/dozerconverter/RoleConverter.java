@@ -1,6 +1,6 @@
-package com.example.spring.oauth2.dozer.converter;
+package com.jazasoft.sample.dozerconverter;
 
-import com.example.spring.oauth2.entity.Role;
+import com.jazasoft.sample.entity.Role;
 import org.dozer.DozerConverter;
 
 public class RoleConverter extends DozerConverter<String, Role>{

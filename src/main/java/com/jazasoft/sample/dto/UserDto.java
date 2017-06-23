@@ -1,10 +1,13 @@
-package com.example.spring.oauth2.dto;
+package com.jazasoft.sample.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.hateoas.core.Relation;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@Relation(collectionRelation = "users",value = "user")
 public class UserDto {
 
     private Long id;

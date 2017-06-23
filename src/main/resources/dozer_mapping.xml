@@ -5,10 +5,10 @@
    http://dozer.sourceforge.net/schema/beanmapping.xsd">
     
     <mapping >
-      <class-a>com.example.spring.oauth2.dto.UserDto</class-a>
-      <class-b>com.example.spring.oauth2.entity.User</class-b>
+      <class-a>com.jazasoft.sample.dto.UserDto</class-a>
+      <class-b>com.jazasoft.sample.entity.User</class-b>
 
-      <field custom-converter="com.example.spring.oauth2.dozer.converter.RoleConverter">
+      <field custom-converter="com.jazasoft.sample.dozerconverter.RoleConverter">
          <a>role</a>
          <b>role</b>
       </field>
