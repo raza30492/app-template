@@ -13,6 +13,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -43,6 +44,11 @@ public class GenericExceptionHandler {
                 })
                 .collect(Collectors.toList());
         return errors;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleMessageNotReadable(HttpMessageNotReadableException e) {
+        return response(HttpStatus.BAD_REQUEST, 400, "Request body cannot be empty.", e.getMessage(), "");
     }
 
     @ExceptionHandler

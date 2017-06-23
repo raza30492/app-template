@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
-@Ignore
+//@Ignore
 public class UserIntegrationTest {
 
     @Autowired  MockMvc mvc;

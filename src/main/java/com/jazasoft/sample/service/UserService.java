@@ -45,9 +45,9 @@ public class UserService {
         return mapper.map(userRepository.findByEmail(email), UserDto.class);
     }
     
-    public UserDto findByUsername(String username) {
-        logger.debug("findByUsername(): name = " , username);
-        return mapper.map(userRepository.findByName(username), UserDto.class);
+    public UserDto findByName(String name) {
+        logger.debug("findByName(): name = " , name);
+        return mapper.map(userRepository.findByName(name), UserDto.class);
     }
 
     public Boolean exists(Long id) {

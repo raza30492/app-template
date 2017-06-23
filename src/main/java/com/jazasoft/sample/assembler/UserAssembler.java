@@ -31,4 +31,5 @@ public class UserAssembler extends ResourceAssemblerSupport<UserDto, Resource>{
         }
         return resources;
     }
+
 }

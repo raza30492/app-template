@@ -19,16 +19,10 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(ApiUrls.ROOT_URL_USERS)
@@ -44,6 +38,7 @@ public class UserRestController{
     public ResponseEntity<?> listAllUsers() {
         logger.debug("listAllUsers()");
         List<UserDto> users = userService.findAll();
+        //Resource r = new Resource()
         Resources resources = new Resources(userAssembler.toResources(users),linkTo(UserRestController.class).withSelfRel());
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
@@ -52,6 +47,26 @@ public class UserRestController{
     public ResponseEntity<?> getUser(@PathVariable("userId") long id) {
         logger.debug("getUser(): id = {}",id);
         UserDto user = userService.findOne(id);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(userAssembler.toResource(user), HttpStatus.OK);
+    }
+
+    @GetMapping(ApiUrls.URL_USERS_USER_SEARCH_BY_NAME)
+    public ResponseEntity<?> searchByName(@RequestParam("name") String name){
+        logger.debug("searchByName(): name = {}",name);
+        UserDto user = userService.findByName(name);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(userAssembler.toResource(user), HttpStatus.OK);
+    }
+
+    @GetMapping(ApiUrls.URL_USERS_USER_SEARCH_BY_EMAIL)
+    public ResponseEntity<?> searchByEmail(@RequestParam("email") String email){
+        logger.debug("searchByName(): name = {}",email);
+        UserDto user = userService.findByEmail(email);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
