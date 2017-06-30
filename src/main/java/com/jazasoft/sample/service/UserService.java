@@ -3,6 +3,8 @@ package com.jazasoft.sample.service;
 import com.jazasoft.sample.dto.UserDto;
 import com.jazasoft.sample.entity.User;
 import com.jazasoft.sample.respository.UserRespository;
+
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,14 +42,38 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserDto> findAllAfter(long after) {
+        logger.debug("findAllAfter(): after = {}" , after);
+        return userRepository.findByLastModifiedGreaterThan(new Date(after)).stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
     public UserDto findByEmail(String email) {
         logger.debug("findByEmail(): email = {}",email);
-        return mapper.map(userRepository.findByEmail(email), UserDto.class);
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            return mapper.map(user, UserDto.class);
+        }
+        return null;
     }
     
     public UserDto findByName(String name) {
         logger.debug("findByName(): name = " , name);
-        return mapper.map(userRepository.findByName(name), UserDto.class);
+        User user = userRepository.findByName(name);
+        if (user != null) {
+            return mapper.map(user, UserDto.class);
+        }
+        return null;
+    }
+
+    public UserDto findByUsername(String username) {
+        logger.debug("findByUsername(): username = " , username);
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return mapper.map(user, UserDto.class);
+        }
+        return null;
     }
 
     public Boolean exists(Long id) {
@@ -65,6 +91,7 @@ public class UserService {
         logger.debug("save()");
         User user = mapper.map(userDto, User.class);
         user.setPassword(userDto.getMobile());
+        user.setActive(true);
         user = userRepository.save(user);
         return mapper.map(user, UserDto.class);
     }

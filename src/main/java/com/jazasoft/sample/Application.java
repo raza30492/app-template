@@ -35,16 +35,14 @@ public class Application/* extends SpringBootServletInitializer*/{
 //    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 //        return application.sources(Application.class);
 //    }
-    
-    
-    
+
     @Bean
     CommandLineRunner init(
             UserService userService) {
 
         return (args) -> {
             if(userService.count() == 0){
-                userService.save(new UserDto("Md Zahid Raza","zahid7292@gmail.com","ADMIN","8987525008"));
+                userService.save(new UserDto("Md Zahid Raza","zahid7292","zahid7292@gmail.com","ADMIN","8987525008"));
             }           
         };
     }

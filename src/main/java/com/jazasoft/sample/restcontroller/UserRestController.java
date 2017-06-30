@@ -6,7 +6,9 @@ import com.jazasoft.sample.dto.UserDto;
 import com.jazasoft.sample.service.UserService;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +37,14 @@ public class UserRestController{
     @Autowired UserAssembler userAssembler;
     
     @GetMapping
-    public ResponseEntity<?> listAllUsers() {
+    public ResponseEntity<?> listAllUsers(@RequestParam(value = "after", defaultValue = "0") Long after) {
         logger.debug("listAllUsers()");
-        List<UserDto> users = userService.findAll();
-        //Resource r = new Resource()
-        Resources resources = new Resources(userAssembler.toResources(users),linkTo(UserRestController.class).withSelfRel());
-        return new ResponseEntity<>(resources, HttpStatus.OK);
+        List<UserDto> users = userService.findAllAfter(after);
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("users", userAssembler.toResources(users));
+        resp.put("lastSync", System.currentTimeMillis());
+        Resource resource = new Resource(resp, linkTo(UserRestController.class).withSelfRel());
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
   
     @GetMapping(ApiUrls.URL_USERS_USER)

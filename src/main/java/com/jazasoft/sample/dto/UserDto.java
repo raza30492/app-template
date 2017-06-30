@@ -3,6 +3,7 @@ package com.jazasoft.sample.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jazasoft.sample.Role;
 import com.jazasoft.sample.validation.StringEnum;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.hateoas.core.Relation;
 
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,11 @@ public class UserDto {
     private String name;
 
     @NotNull
-    @Pattern(regexp=".+@.+\\..+", message="Incorrect email!")
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]{5,30}$")
+    private String username;
+
+    @NotNull
+    @Email(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")
     private String email;
 
     @JsonIgnore
@@ -30,14 +35,17 @@ public class UserDto {
     private String role;
 
     @NotNull
-    @Pattern(regexp="[0-9]{10}", message="Incorrect mobile")
+    @Pattern(regexp="[0-9]{10}")
     private String mobile;
+
+    private Boolean active;
 
     public UserDto() {
     }
 
-    public UserDto(String name, String email, String role, String mobile) {
+    public UserDto(String name, String username, String email, String role, String mobile) {
         this.name = name;
+        this.username = username;
         this.email = email;
         this.role = role;
         this.mobile = mobile;
@@ -67,14 +75,6 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getRole() {
         return role;
     }
@@ -91,8 +91,40 @@ public class UserDto {
         this.mobile = mobile;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public String toString() {
-        return "UserDto{" + "id=" + id + ", name=" + name + ", email=" + email + ", role=" + role + ", mobile=" + mobile + '}';
+        return "UserDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

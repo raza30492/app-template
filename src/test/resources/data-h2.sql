@@ -1,7 +1,7 @@
-INSERT INTO `user` (user_id,email,mobile,username,password,role) VALUES
-(1,'zahid7292@gmail.com','8987525008','Md Zahid Raza','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_ADMIN'),
-(2,'jawed@gmail.com','8987525008','Md Jawed Akhtar','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER'),
-(3,'taufeeque8@gmail.com','8987525008','Md Taufeeque Alam','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER');
+INSERT INTO `user` (id,email,mobile,name,username,password,role,active) VALUES
+(1,'zahid7292@gmail.com','8987525008','Md Zahid Raza','zahid7292','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_ADMIN',1),
+(2,'jawed@gmail.com','8987525008','Md Jawed Akhtar','jawed_akhtar','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER',1),
+(3,'taufeeque8@gmail.com','8987525008','Md Taufeeque Alam','taufeeque_alam','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER',1);
 --
 --INSERT INTO `category` (id,name) VALUES
 --(1,'Test Category 1'),

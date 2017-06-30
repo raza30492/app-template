@@ -31,7 +31,7 @@ public class WebSecurityGlobalConfig extends GlobalAuthenticationConfigurerAdapt
             if(email.contains("@")){
                 user = userService.findByEmail(email);
             }else{
-                user = userService.findByName(email);
+                user = userService.findByUsername(email);
             }
             if (user != null) {
                 return new User(user.getName(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole()));
