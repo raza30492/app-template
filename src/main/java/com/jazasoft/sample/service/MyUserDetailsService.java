@@ -2,32 +2,60 @@ package com.jazasoft.sample.service;
 
 import com.jazasoft.sample.dto.UserDto;
 import com.jazasoft.sample.entity.User;
-import com.jazasoft.sample.respository.UserRespository;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.jazasoft.sample.respository.UserRepository;
+import com.jazasoft.sample.util.Utils;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * Created by mdzahidraza on 26/06/17.
+ */
 @Service
 @Transactional(readOnly = true)
-public class UserService {
-    
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+public class MyUserDetailsService implements UserDetailsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyUserDetailsService.class);
 
     @Autowired
-    UserRespository userRepository;
-    
-    @Autowired Mapper mapper;
+    private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        LOGGER.trace("Looking for user for {}", username);
+        try {
+            Optional<User> user = userRepository.findOneByUsername(username);
+            if (!user.isPresent()) {
+                user = userRepository.findOneByEmail(username);
+                if (!user.isPresent()) {
+                    LOGGER.info("USER NOT PRESENT for {}", username);
+                    throw new UsernameNotFoundException("user not found");
+                }
+            }
+            LOGGER.trace("Found user for {}", username);
+            return user.get();
+        } catch (Exception e) {
+            LOGGER.error("Error loading user {}", username, e);
+        }
+        return null;
+    }
+
+
+    @Autowired
+    Mapper mapper;
 
     public UserDto findOne(Long id) {
-        logger.debug("findOne(): id = {}",id);
+        LOGGER.debug("findOne(): id = {}",id);
         User user = userRepository.findOne(id);
         if (user != null) {
             return mapper.map(userRepository.findOne(id), UserDto.class);
@@ -36,30 +64,30 @@ public class UserService {
     }
 
     public List<UserDto> findAll() {
-        logger.debug("findAll()");
+        LOGGER.debug("findAll()");
         return userRepository.findAll().stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }
 
     public List<UserDto> findAllAfter(long after) {
-        logger.debug("findAllAfter(): after = {}" , after);
-        return userRepository.findByLastModifiedGreaterThan(new Date(after)).stream()
+        LOGGER.debug("findAllAfter(): after = {}" , after);
+        return userRepository.findByUpdatedAtGreaterThan(new Date(after)).stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }
 
     public UserDto findByEmail(String email) {
-        logger.debug("findByEmail(): email = {}",email);
+        LOGGER.debug("findByEmail(): email = {}",email);
         User user = userRepository.findByEmail(email);
         if (user != null) {
             return mapper.map(user, UserDto.class);
         }
         return null;
     }
-    
+
     public UserDto findByName(String name) {
-        logger.debug("findByName(): name = " , name);
+        LOGGER.debug("findByName(): name = " , name);
         User user = userRepository.findByName(name);
         if (user != null) {
             return mapper.map(user, UserDto.class);
@@ -68,7 +96,7 @@ public class UserService {
     }
 
     public UserDto findByUsername(String username) {
-        logger.debug("findByUsername(): username = " , username);
+        LOGGER.debug("findByUsername(): username = " , username);
         User user = userRepository.findByUsername(username);
         if (user != null) {
             return mapper.map(user, UserDto.class);
@@ -77,37 +105,42 @@ public class UserService {
     }
 
     public Boolean exists(Long id) {
-        logger.debug("exists(): id = ",id);
+        LOGGER.debug("exists(): id = ",id);
         return userRepository.exists(id);
     }
-    
+
     public Long count(){
-        logger.debug("count()");
+        LOGGER.debug("count()");
         return userRepository.count();
     }
 
     @Transactional
     public UserDto save(UserDto userDto) {
-        logger.debug("save()");
+        LOGGER.debug("save()");
         User user = mapper.map(userDto, User.class);
+        user.setRoles(Utils.getRoles(userDto.getRoles()));
         user.setPassword(userDto.getMobile());
-        user.setActive(true);
+        user.setEnabled(true);
         user = userRepository.save(user);
         return mapper.map(user, UserDto.class);
     }
 
     @Transactional
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Transactional
     public UserDto update(UserDto userDto) {
-        logger.debug("update()");
+        LOGGER.debug("update()");
         User user = userRepository.findOne(userDto.getId());
         user = mapper.map(userDto, User.class);
         return mapper.map(user, UserDto.class);
     }
-    
+
     @Transactional
     public void delete(Long id) {
-        logger.debug("delete(): id = {}",id);
+        LOGGER.debug("delete(): id = {}",id);
         userRepository.delete(id);
     }
-    
 }

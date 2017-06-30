@@ -32,7 +32,7 @@ public class UserDto {
 
     @NotNull
     @StringEnum(enumClass = Role.class)
-    private String role;
+    private String roles;
 
     @NotNull
     @Pattern(regexp="[0-9]{10}")
@@ -43,11 +43,11 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String name, String username, String email, String role, String mobile) {
+    public UserDto(String name, String username, String email, String roles, String mobile) {
         this.name = name;
         this.username = username;
         this.email = email;
-        this.role = role;
+        this.roles = roles;
         this.mobile = mobile;
     }
 
@@ -75,12 +75,12 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     public String getMobile() {
@@ -122,7 +122,7 @@ public class UserDto {
                 ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
+                ", roles='" + roles + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", active=" + active +
                 '}';

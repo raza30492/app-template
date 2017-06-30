@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-public interface UserRespository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long>{
     
     User findByEmail(String email);
     
@@ -15,5 +16,9 @@ public interface UserRespository extends JpaRepository<User, Long>{
 
     User findByUsername(String username);
 
-    List<User> findByLastModifiedGreaterThan(Date lastModified);
+    Optional<User> findOneByUsername(String username);
+
+    Optional<User> findOneByEmail(String email);
+
+    List<User> findByUpdatedAtGreaterThan(Date updatedAt);
 }

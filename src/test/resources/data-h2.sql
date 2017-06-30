@@ -1,4 +1,4 @@
-INSERT INTO `user` (id,email,mobile,name,username,password,role,active) VALUES
+INSERT INTO `user` (id,email,mobile,name,username,password,roles,active) VALUES
 (1,'zahid7292@gmail.com','8987525008','Md Zahid Raza','zahid7292','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_ADMIN',1),
 (2,'jawed@gmail.com','8987525008','Md Jawed Akhtar','jawed_akhtar','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER',1),
 (3,'taufeeque8@gmail.com','8987525008','Md Taufeeque Alam','taufeeque_alam','$2a$10$77hLDsxw.pDU5eG/cPqlgOjQ8UQ.YLZjK2qHMmN3sD.qbkL8EOn/a','ROLE_USER',1);
@@ -38,7 +38,7 @@ CREATE TABLE `user` (
   `mobile` varchar(255) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL,
+  `roles` varchar(255) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UK_ob8kqyqqgmefl0aco34akdtpe` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

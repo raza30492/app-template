@@ -3,7 +3,7 @@ package com.jazasoft.sample.restcontroller;
 import com.jazasoft.sample.ApiUrls;
 import com.jazasoft.sample.assembler.UserAssembler;
 import com.jazasoft.sample.dto.UserDto;
-import com.jazasoft.sample.service.UserService;
+import com.jazasoft.sample.service.MyUserDetailsService;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,8 @@ public class UserRestController{
     
     private final Logger logger = LoggerFactory.getLogger(UserRestController.class);
     
-    @Autowired UserService userService;  //Service which will do all data retrieval/manipulation work
+    @Autowired
+    MyUserDetailsService userService;  //Service which will do all data retrieval/manipulation work
 
     @Autowired UserAssembler userAssembler;
     

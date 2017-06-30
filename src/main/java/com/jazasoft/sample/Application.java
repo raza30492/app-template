@@ -1,10 +1,12 @@
 package com.jazasoft.sample;
 
 import com.jazasoft.sample.dto.UserDto;
-import com.jazasoft.sample.service.UserService;
+import com.jazasoft.sample.entity.User;
+import com.jazasoft.sample.service.MyUserDetailsService;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jazasoft.sample.util.Utils;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -37,12 +39,14 @@ public class Application/* extends SpringBootServletInitializer*/{
 //    }
 
     @Bean
-    CommandLineRunner init(
-            UserService userService) {
+    CommandLineRunner init(MyUserDetailsService userService) {
 
         return (args) -> {
             if(userService.count() == 0){
-                userService.save(new UserDto("Md Zahid Raza","zahid7292","zahid7292@gmail.com","ADMIN","8987525008"));
+                User user = new User("Md Zahid Raza","zahid7292","zahid7292@gmail.com","admin","8987525008",true,false,false,false);
+                user.setRoles(Utils.getRoles("ROLE_ADMIN"));
+                userService.save(user);
+                //userService.save(new UserDto("Md Zahid Raza","zahid7292","zahid7292@gmail.com","ROLE_ADMIN","8987525008"));
             }           
         };
     }
