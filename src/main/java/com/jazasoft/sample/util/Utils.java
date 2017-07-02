@@ -10,6 +10,10 @@ import java.util.Set;
  */
 public class Utils {
 
+    public static String getAppHome() {
+        return System.getenv("SAMPLE_HOME");
+    }
+
     public static Set<Role> getRoles(String roles) {
         if (roles == null) return null;
         String[] rols = roles.split(",");

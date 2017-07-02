@@ -1,10 +1,13 @@
 package com.jazasoft.sample.entity;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,35 +15,38 @@ import java.util.Date;
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public class Auditable<U> implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @CreatedDate
-    @Column(name = "created_at")
     protected Date createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
-    protected Date updatedAt;
+    protected Date modifiedAt;
 
-    @Column(name = "enabled")
+    @CreatedBy
+    protected U createdBy;
+
+    @LastModifiedBy
+    protected U modifiedBy;
+
     protected Boolean enabled;
 
-    public BaseEntity() {
+    public Auditable() {
     }
 
-    public BaseEntity(Long id) {
+    public Auditable(Long id) {
         this.id = id;
     }
 
-    public BaseEntity(Boolean enabled) {
+    public Auditable(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    public BaseEntity(Long id, Boolean enabled) {
+    public Auditable(Long id, Boolean enabled) {
         this.id = id;
         this.enabled = enabled;
     }
@@ -69,11 +75,27 @@ public class BaseEntity {
         this.id = id;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getModifiedAt() {
+        return modifiedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
+    public U getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(U createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public U getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(U modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 }

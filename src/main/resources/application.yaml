@@ -1,0 +1,42 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    ### PostgreSQL configuration ###
+#    url: jdbc:postgresql://localhost:5432/sample
+#    username: mdzahidraza
+#    password: zahid
+#    platform: postgresql
+#    initialize: true
+#    continue-on-error: true
+    ### MySQL configuration ###
+    url: jdbc:mysql://localhost:3306/sample?createDatabaseIfNotExist=true
+    username: root
+    password: zahid
+    platform: mysql
+    initialize: true
+    continue-on-error: false
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+
+security:
+  filter-order: 0
+  oauth2:
+    resource:
+      id: TEST_RESOURCE
+      filter-order: 3
+    clients:
+      - access-token-validity: 43200
+        refresh-token-validity: 43200
+        id: client
+        secret: secret
+        scope: read,write,trust
+      - access-token-validity: 3600
+        refresh-token-validity: 7200
+        id: client-web
+        secret: secret-web
+        scope: read,write,trust

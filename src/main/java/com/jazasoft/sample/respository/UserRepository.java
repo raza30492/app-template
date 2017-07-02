@@ -20,5 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     Optional<User> findOneByEmail(String email);
 
-    List<User> findByUpdatedAtGreaterThan(Date updatedAt);
+    List<User> findByModifiedAtGreaterThan(Date updatedAt);
 }

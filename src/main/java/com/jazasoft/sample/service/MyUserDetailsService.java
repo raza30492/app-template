@@ -72,7 +72,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public List<UserDto> findAllAfter(long after) {
         LOGGER.debug("findAllAfter(): after = {}" , after);
-        return userRepository.findByUpdatedAtGreaterThan(new Date(after)).stream()
+        return userRepository.findByModifiedAtGreaterThan(new Date(after)).stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }

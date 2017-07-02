@@ -4,7 +4,7 @@
           xsi:schemaLocation="http://dozer.sourceforge.net
    http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
-    <mapping>
+    <mapping map-null="false">
         <class-a>com.jazasoft.sample.dto.UserDto</class-a>
         <class-b>com.jazasoft.sample.entity.User</class-b>
 
