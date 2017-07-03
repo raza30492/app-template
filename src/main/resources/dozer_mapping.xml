@@ -7,12 +7,5 @@
     <mapping map-null="false">
         <class-a>com.jazasoft.sample.dto.UserDto</class-a>
         <class-b>com.jazasoft.sample.entity.User</class-b>
-
-        <field-exclude>
-            <a>roles</a>
-            <b>roles</b>
-        </field-exclude>
-
-
     </mapping>
 </mappings>

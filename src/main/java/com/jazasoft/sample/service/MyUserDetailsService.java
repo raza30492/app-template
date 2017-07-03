@@ -3,7 +3,6 @@ package com.jazasoft.sample.service;
 import com.jazasoft.sample.dto.UserDto;
 import com.jazasoft.sample.entity.User;
 import com.jazasoft.sample.respository.UserRepository;
-import com.jazasoft.sample.util.Utils;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by mdzahidraza on 26/06/17.
@@ -54,54 +52,34 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     Mapper mapper;
 
-    public UserDto findOne(Long id) {
+    public User findOne(Long id) {
         LOGGER.debug("findOne(): id = {}",id);
-        User user = userRepository.findOne(id);
-        if (user != null) {
-            return mapper.map(userRepository.findOne(id), UserDto.class);
-        }
-        return null;
+        return userRepository.findOne(id);
     }
 
-    public List<UserDto> findAll() {
+    public List<User> findAll() {
         LOGGER.debug("findAll()");
-        return userRepository.findAll().stream()
-                .map(user -> mapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
+        return userRepository.findAll();
     }
 
-    public List<UserDto> findAllAfter(long after) {
+    public List<User> findAllAfter(long after) {
         LOGGER.debug("findAllAfter(): after = {}" , after);
-        return userRepository.findByModifiedAtGreaterThan(new Date(after)).stream()
-                .map(user -> mapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
+        return userRepository.findByModifiedAtGreaterThan(new Date(after));
     }
 
-    public UserDto findByEmail(String email) {
+    public User findByEmail(String email) {
         LOGGER.debug("findByEmail(): email = {}",email);
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            return mapper.map(user, UserDto.class);
-        }
-        return null;
+        return userRepository.findByEmail(email);
     }
 
-    public UserDto findByName(String name) {
+    public User findByName(String name) {
         LOGGER.debug("findByName(): name = " , name);
-        User user = userRepository.findByName(name);
-        if (user != null) {
-            return mapper.map(user, UserDto.class);
-        }
-        return null;
+        return userRepository.findByName(name);
     }
 
-    public UserDto findByUsername(String username) {
+    public User findByUsername(String username) {
         LOGGER.debug("findByUsername(): username = " , username);
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-            return mapper.map(user, UserDto.class);
-        }
-        return null;
+        return userRepository.findByUsername(username);
     }
 
     public Boolean exists(Long id) {
@@ -115,32 +93,27 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDto save(UserDto userDto) {
+    public User save(User user) {
         LOGGER.debug("save()");
-        User user = mapper.map(userDto, User.class);
-        user.setRoles(Utils.getRoles(userDto.getRoles()));
-        user.setPassword(userDto.getMobile());
+        user.setPassword(user.getMobile());
         user.setEnabled(true);
-        user = userRepository.save(user);
-        return mapper.map(user, UserDto.class);
+        return userRepository.save(user);
     }
 
     @Transactional
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public UserDto update(UserDto userDto) {
+    public User update(UserDto userDto) {
         LOGGER.debug("update()");
         User user = userRepository.findOne(userDto.getId());
-        user = mapper.map(userDto, User.class);
-        return mapper.map(user, UserDto.class);
+        System.out.println("UserDto = " + userDto);
+        mapper.map(userDto,user);
+        System.out.println("User = " + user);
+        return user;
     }
 
     @Transactional
     public void delete(Long id) {
         LOGGER.debug("delete(): id = {}",id);
-        userRepository.delete(id);
+        User user = userRepository.findOne(id);
+        user.setEnabled(false);
     }
 }

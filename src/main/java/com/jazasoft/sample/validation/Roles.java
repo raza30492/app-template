@@ -11,10 +11,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 
 @Documented
-@Constraint(validatedBy = StringEnumValidator.class)
+@Constraint(validatedBy = RolesValidator.class)
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, PARAMETER, CONSTRUCTOR })
 @Retention(RUNTIME)
-public @interface StringEnum {
+public @interface Roles {
 
   String message() default "{com.xxx.bean.validation.constraints.StringEnumeration.message}";
   Class<?>[] groups() default {};

@@ -1,5 +1,6 @@
 package com.jazasoft.sample.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -21,15 +22,19 @@ public class Auditable<U> implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
+    @JsonIgnore
     @CreatedDate
     protected Date createdAt;
 
+    @JsonIgnore
     @LastModifiedDate
     protected Date modifiedAt;
 
+    @JsonIgnore
     @CreatedBy
     protected U createdBy;
 
+    @JsonIgnore
     @LastModifiedBy
     protected U modifiedBy;
 

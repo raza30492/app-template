@@ -2,11 +2,10 @@ package com.jazasoft.sample.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jazasoft.sample.Role;
-import com.jazasoft.sample.validation.StringEnum;
+import com.jazasoft.sample.validation.Roles;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.hateoas.core.Relation;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -15,30 +14,25 @@ public class UserDto {
 
     private Long id;
 
-    @NotNull
-    @Size(min = 5, max = 100)
+    @Size(min = 3, max = 50)
     private String name;
 
-    @NotNull
-    @Pattern(regexp = "^[a-zA-Z0-9_.-]{5,30}$")
+    @Pattern(regexp="^(?=.*[a-zA-Z])[a-zA-Z0-9_\\-\\.]{3,50}$")
     private String username;
 
-    @NotNull
-    @Email(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")
+    @Pattern(regexp="^(?=.*[a-zA-Z])[a-zA-Z0-9_\\-@\\.]{5,40}$")
     private String email;
 
     @JsonIgnore
     private String password;
 
-    @NotNull
-    @StringEnum(enumClass = Role.class)
+    @Roles(enumClass = Role.class)
     private String roles;
 
-    @NotNull
     @Pattern(regexp="[0-9]{10}")
     private String mobile;
 
-    private Boolean active;
+    private Boolean enabled;
 
     public UserDto() {
     }
@@ -107,12 +101,12 @@ public class UserDto {
         this.username = username;
     }
 
-    public Boolean getActive() {
-        return active;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -124,7 +118,7 @@ public class UserDto {
                 ", email='" + email + '\'' +
                 ", roles='" + roles + '\'' +
                 ", mobile='" + mobile + '\'' +
-                ", active=" + active +
+                ", enabled=" + enabled +
                 '}';
     }
 }

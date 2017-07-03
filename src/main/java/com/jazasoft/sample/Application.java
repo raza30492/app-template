@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @SpringBootApplication
 @Controller
 public class Application extends SpringBootServletInitializer {
-    
+
     private final Logger logger = LoggerFactory.getLogger(Application.class);
-    
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -48,28 +48,23 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     CommandLineRunner init(MyUserDetailsService userService) {
         return (args) -> {
-            if(userService.count() == 0){
-                User user = new User("Md Zahid Raza","zahid7292","zahid7292@gmail.com","admin","8987525008",true,false,false,false);
-                user.setRoles(Utils.getRoles("ROLE_ADMIN"));
+            if (userService.count() == 0) {
+                User user = new User("Md Zahid Raza", "zahid7292", "zahid7292@gmail.com", "admin", "8987525008", true, false, false, false);
+                user.setRoles("ROLE_ADMIN");
                 userService.save(user);
                 //userService.save(new UserDto("Md Zahid Raza","zahid7292","zahid7292@gmail.com","ROLE_ADMIN","8987525008"));
-            }           
+            }
         };
     }
-    
+
     @Bean
-    public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
-    }
-    
-     @Bean
     public Mapper dozerBeanMapper() {
         List<String> list = new ArrayList<>();
         list.add("dozer_mapping.xml");
         return new DozerBeanMapper(list);
     }
-    
-    @GetMapping(value= "/")
+
+    @GetMapping(value = "/")
     @ResponseBody
     public ResponseEntity<?> hello() {
         logger.debug("home page");
