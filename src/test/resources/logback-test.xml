@@ -15,9 +15,13 @@
     </encoder>
   </appender>
 
-  <logger name="com.example.spring.oauth2" level="DEBUG" additivity="false">
+  <logger name="com.jazasoft.sample" level="DEBUG" additivity="false">
     <appender-ref ref="FILE" />
     <appender-ref ref="STDOUT" />
+  </logger>
+
+  <logger name="org.springframework" level="DEBUG" additivity="false">
+    <appender-ref ref="FILE" />
   </logger>
 
   <!-- Strictly speaking, the level attribute is not necessary since -->

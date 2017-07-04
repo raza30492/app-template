@@ -40,7 +40,7 @@ public class YamlUtilsTest {
 
     @Test
     public void testAppProperty() throws IOException{
-        Assert.assertEquals("8085",yamlUtils.getAppProperty("server.port"));
+        Assert.assertEquals("8081",yamlUtils.getAppProperty("server.port"));
     }
 
     @Test

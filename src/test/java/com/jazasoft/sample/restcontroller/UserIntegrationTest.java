@@ -6,6 +6,7 @@ package com.jazasoft.sample.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jazasoft.sample.ApiUrls;
+import com.jazasoft.sample.dto.OauthResponse;
 import com.jazasoft.sample.dto.UserDto;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
+
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.is;
@@ -41,15 +48,29 @@ public class UserIntegrationTest {
 
     private final String contentType = "application/hal+json;charset=UTF-8";
 
+    private String accessToken = "";
+
 
     @Before
-    public void setUp(){
-
+    public void setUp() throws Exception{
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type","password");
+        params.add("username","zahid7292");
+        params.add("password","admin");
+        MvcResult mvcResult = mvc.perform(post(ApiUrls.OAUTH_URL)
+                .params(params)
+                .header("Authorization","Basic Y2xpZW50OnNlY3JldA==")
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        String resp = mvcResult.getResponse().getContentAsString();
+        OauthResponse oauthResponse = mapper.readValue(resp, OauthResponse.class);
+        accessToken = oauthResponse.getAccess_token();
     }
 
     @Test
-    public void getAllUsers() throws Exception{
-        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS))
+    public void getAllUser() throws Exception{
+        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS).header("Authorization","Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$._embedded.users",hasSize(3)))
@@ -60,23 +81,26 @@ public class UserIntegrationTest {
 
     @Test
     public void getUser() throws Exception{
-        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS +"/1"))
+        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS +"/1").header("Authorization","Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.name", is("Md Zahid Raza")))
                 .andExpect(jsonPath("$._links.self").exists());
 
-        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS +"/10"))
+        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS +"/10").header("Authorization","Bearer " + accessToken))
                 .andExpect(status().isNotFound());
     }
 
 
     @Test
     public void createAndDeleteUser() throws Exception{
-        UserDto user = new UserDto("Test User","test_user", "test@gmail.com", "USER", "8987525008");
+        UserDto user = new UserDto("Test UserDto","test_user", "test@gmail.com","8987525008","ROLE_USER");
+        System.out.println("-$$$-" +mapper.writeValueAsString(user));
         MvcResult mvcResult = mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isCreated())
                 .andReturn();
         String locationUri = mvcResult.getResponse().getHeader("Location");
@@ -85,16 +109,16 @@ public class UserIntegrationTest {
         int idx = locationUri.lastIndexOf('/');
         String id = locationUri.substring(idx+1);
 
-        this.mvc.perform(get( ApiUrls.ROOT_URL_USERS +"/{id}",id))
+        this.mvc.perform(get( ApiUrls.ROOT_URL_USERS +"/{id}",id).header("Authorization","Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.name", is("Test User")));
+                .andExpect(jsonPath("$.name", is("Test UserDto")));
 
-        this.mvc.perform(delete(ApiUrls.ROOT_URL_USERS + "/{id}", id))
+        this.mvc.perform(delete(ApiUrls.ROOT_URL_USERS + "/{id}", id).header("Authorization","Bearer " + accessToken))
                 .andExpect(status().isNoContent());
 
-        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS + "/{id}", id))
-                .andExpect(status().isNotFound());
+        this.mvc.perform(get(ApiUrls.ROOT_URL_USERS + "/{id}", id).header("Authorization","Bearer " + accessToken))
+                .andExpect(jsonPath("$.enabled", is(false)));
     }
 
     @Test
@@ -102,50 +126,61 @@ public class UserIntegrationTest {
         UserDto user = new UserDto();
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(5)));
 
         //Test each fields one by one
-        user = new UserDto("","test_user", "test@gmail.com", "ADMIN", "8987525008");
+        user = new UserDto("","test_user", "test@gmail.com", "8987525008","ROLE_USER");
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].field", is("name")))
-                .andExpect(jsonPath("$[0].message", containsString("length must be between 5")));
+                .andExpect(jsonPath("$[0].message", containsString("length must be between 3")));
 
-        user = new UserDto("Md Zahid Raza","test user", "test@gmail.com", "ADMIN", "8987525008");
+        user = new UserDto("Md Zahid Raza","test user", "test@gmail.com", "8987525008","ROLE_USER");
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].field", is("username")));
 
-        user = new UserDto("Md Zahid Raza","test_user", "test", "ADMIN", "8987525008");
+        user = new UserDto("Md Zahid Raza","test_user", "test", "8987525008","ROLE_USER");
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].field", is("email")))
                 .andExpect(jsonPath("$[0].message", containsString("Incorrect email")));
 
-        user = new UserDto("Md Zahid Raza","test_user", "test@gmail.com", "ADMINISTARTOR", "8987525008");
+        user = new UserDto("Md Zahid Raza","test_user", "test@gmail.com", "8987525008","ROLE_ADMINISTARTOR");
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].field", is("role")))
-                .andExpect(jsonPath("$[0].message", containsString("Accepted values are [ADMIN,USER]")));
+                .andExpect(jsonPath("$[0].field", is("roles")));
 
-        user = new UserDto("Md Zahid Raza","test_user", "test@gmail.com", "ADMIN", "8987525");
+        user = new UserDto("Md Zahid Raza","test_user", "test@gmail.com", "8987525","ROLE_USER");
         this.mvc.perform(post(ApiUrls.ROOT_URL_USERS)
                 .content(mapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer " + accessToken)
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].field", is("mobile")))
